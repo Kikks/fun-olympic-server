@@ -166,6 +166,8 @@ exports.uploadImage = (req, res) => {
 			if (err) {
 				console.log(err)
 			}
+
+			fs.unlinkSync(targetFile.tempFilePath)
 			return res.status(201).json({ url: image.secure_url })
 		})
 	} catch (errors) {
