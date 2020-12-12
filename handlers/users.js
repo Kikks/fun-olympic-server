@@ -150,17 +150,20 @@ exports.uploadImage = (req, res) => {
 	const path = require("path")
 	const fs = require("fs")
 	const extName = path.extname(targetFile.name)
+	const errors = {}
 
 	const imgList = [".png", ".jpg", ".jpeg"]
 	// Checking the file type
 	if (!imgList.includes(extName)) {
 		fs.unlinkSync(targetFile.tempFilePath)
-		return res.status(422).send("Invalid Image")
+		errors.identification = "Invalid File format"
+		return res.status(422).json(errors)
 	}
 
 	if (targetFile.size > 1048576) {
 		fs.unlinkSync(targetFile.tempFilePath)
-		return res.status(413).send("File is too Large")
+		errors.identification = "File is too large"
+		return res.status(413).json(errors)
 	}
 
 	try {
@@ -172,7 +175,8 @@ exports.uploadImage = (req, res) => {
 			fs.unlinkSync(targetFile.tempFilePath)
 			return res.status(201).json({ url: image.secure_url })
 		})
-	} catch (errors) {
+	} catch (error) {
+		errors.identification = "Something went wrong. Try again."
 		return res.status(400).json(errors)
 	}
 }
