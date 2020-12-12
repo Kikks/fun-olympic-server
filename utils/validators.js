@@ -35,7 +35,7 @@ module.exports.validateRegisterInput = (
 	const errors = {}
 
 	if (isEmpty(firstName)) errors.firstName = "First Name must not be empty"
-	if (isEmpty(middleName)) errors.firstName = "Middle Name must not be empty"
+	if (isEmpty(middleName)) errors.middleName= "Middle Name must not be empty"
 	if (isEmpty(lastName)) errors.lastName = "Last Name must not be empty"
 	if (isEmpty(dob)) errors.dob = "Date of Birth must not be empty"
 	if (isEmpty(sex)) errors.sex = "Sex must not be empty"
