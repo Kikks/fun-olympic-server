@@ -58,6 +58,7 @@ module.exports.validateRegisterInput = (
 	if (isEmpty(bank.name)) errors.bankName = "Bank Name must not be empty"
 	if (isEmpty(bank.acctName)) errors.acctName = "Account Name must not be empty"
 	if (isEmpty(bank.acctNo)) errors.acctNo = "Account Number must not be empty"
+	else if (bank.acctNo.length !== 10) errors.acctNo = "Invalid Account Number"
 	else if (!parseFloat(bank.acctNo)) errors.acctNo = "Invalid Account Number"
 
 	return {
