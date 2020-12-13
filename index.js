@@ -43,6 +43,9 @@ app.use(
 	})
 )
 
+
+app.use(cors())
+
 //User routes
 app.post("/user/register", jsonParser, register)
 app.post("/user/login", jsonParser, login)
@@ -68,7 +71,6 @@ app.get("/admin/fetch-sales", checkAdmin, fetchSales)
 app.get("/admin/fetch-purchase", jsonParser, checkAdmin, fetchPurchase)
 app.get("/admin/fetch-sale", jsonParser, checkAdmin, fetchSale)
 
-app.use(cors())
 mongoose
 	.connect(process.env.MERN, {
 		useNewUrlParser: true,
