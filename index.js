@@ -65,11 +65,11 @@ app.post("/admin/upload-rate", jsonParser, checkAdmin, uploadRate)
 app.get("/admin/fetch-users", checkAdmin, fetchUsers)
 app.get("/admin/fetch-pending-users", checkAdmin, fetchPendingUsers)
 app.get("/admin/fetch-user", jsonParser, checkAdmin, fetchUser)
-app.get("/admin/fetch-pending-user", jsonParser, checkAdmin, fetchPendingUser)
+app.post("/admin/fetch-pending-user", jsonParser, checkAdmin, fetchPendingUser)
 app.get("/admin/fetch-purchases", checkAdmin, fetchPurchases)
 app.get("/admin/fetch-sales", checkAdmin, fetchSales)
-app.get("/admin/fetch-purchase", jsonParser, checkAdmin, fetchPurchase)
-app.get("/admin/fetch-sale", jsonParser, checkAdmin, fetchSale)
+app.post("/admin/fetch-purchase", jsonParser, checkAdmin, fetchPurchase)
+app.post("/admin/fetch-sale", jsonParser, checkAdmin, fetchSale)
 
 mongoose
 	.connect(process.env.MERN, {
