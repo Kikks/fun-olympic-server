@@ -6,10 +6,13 @@ const {
 	validateRegisterAdmin,
 	validateUploadRate
 } = require("../utils/validators")
+const mongoose = require("mongoose")
 const Administrator = require("../models/Administrator")
 const PendingUser = require("../models/PendingUser")
 const User = require("../models/User")
 const Rate = require("../models/Rate")
+const Purchase = require("../models/Purchase")
+const Sell = require("../models/Sell")
 
 exports.adminLogin = async (req, res) => {
 	const { email, password } = req.body
@@ -101,8 +104,9 @@ exports.verifyUser = async (req, res) => {
 		}
 
 		const { pendingUserId } = req.body
+		const transformedId = mongoose.Types.ObjectId(pendingUserId)
 
-		const pendingUser = await PendingUser.findById(pendingUserId)
+		const pendingUser = await PendingUser.findById(transformedId)
 
 		if (!pendingUser) {
 			errors.general = "No user with this id is pending"
@@ -181,7 +185,8 @@ exports.fetchUser = async (req, res) => {
 			return res.status(403).json(errors)
 		}
 
-		const user = await User.findById(req.body.userId)
+		const transformedId = mongoose.Types.ObjectId(req.body.userId)
+		const user = await User.findById(transformedId)
 		if (!user) {
 			errors.general = "No user with this id found."
 			return res.status(400).json(errors)
@@ -202,13 +207,150 @@ exports.fetchPendingUser = async (req, res) => {
 			return res.status(403).json(errors)
 		}
 
-		const pendingUser = await PendingUser.findById(req.body.pendingUserId)
+		const transformedId = mongoose.Types.ObjectId(req.body.pendingUserId)
+		const pendingUser = await PendingUser.findById(transformedId)
 		if (!pendingUser) {
 			errors.general = "No pending user with this id found."
 			return res.status(400).json(errors)
 		}
 
 		return res.status(201).json(pendingUser)
+	} catch (error) {
+		errors.general = "Someting went wrong try again later."
+		return res.status(400).json(errors)
+	}
+}
+
+exports.fetchPurchases = async (req, res) => {
+	const errors = {}
+	try {
+		if (!res.locals.admin) {
+			errors.general = "Not Authorized"
+			return res.status(403).json(errors)
+		}
+
+		const purchases = await Purchase.find({})
+
+		return res.status(201).json(purchases)
+	} catch (error) {
+		errors.general = "Someting went wrong try again later."
+		return res.status(400).json(errors)
+	}
+}
+
+exports.fetchSales = async (req, res) => {
+	const errors = {}
+	try {
+		if (!res.locals.admin) {
+			errors.general = "Not Authorized"
+			return res.status(403).json(errors)
+		}
+
+		const sales = await Sell.find({})
+
+		return res.status(201).json(sales)
+	} catch (error) {
+		errors.general = "Someting went wrong try again later."
+		return res.status(400).json(errors)
+	}
+}
+
+exports.fetchPurchase = async (req, res) => {
+	const errors = {}
+	try {
+		if (!res.locals.admin) {
+			errors.general = "Not Authorized"
+			return res.status(403).json(errors)
+		}
+
+		const transformedId = mongoose.Types.ObjectId(req.body.purchaseId)
+		const purchase = await Purchase.findById(transformedId)
+		if (!purchase) {
+			errors.general = "No purchase with this id found."
+			return res.status(400).json(errors)
+		}
+
+		return res.status(201).json(purchase)
+	} catch (error) {
+		errors.general = "Someting went wrong try again later."
+		return res.status(400).json(errors)
+	}
+}
+
+exports.fetchSale = async (req, res) => {
+	const errors = {}
+	try {
+		if (!res.locals.admin) {
+			errors.general = "Not Authorized"
+			return res.status(403).json(errors)
+		}
+
+		const transformedId = mongoose.Types.ObjectId(req.body.saleId)
+		const sale = await Sell.findById(transformedId)
+		if (!sale) {
+			errors.general = "No sale with this id found."
+			return res.status(400).json(errors)
+		}
+
+		return res.status(201).json(sale)
+	} catch (error) {
+		errors.general = "Someting went wrong try again later."
+		return res.status(400).json(errors)
+	}
+}
+
+exports.settleBuy = async (req, res) => {
+	const errors = {}
+	try {
+		if (!res.locals.admin) {
+			errors.general = "Not Authorized"
+			return res.status(403).json(errors)
+		}
+
+		const transformedId = mongoose.Types.ObjectId(req.body.purchaseId)
+
+		const purchase = await Purchase.findOneAndUpdate(
+			{ _id: transformedId },
+			{
+				status: "settled"
+			},
+			{ new: true }
+		)
+
+		await purchase.save()
+
+		return res
+			.status(201)
+			.json({ message: "Purchase has been settled successfully" })
+	} catch (error) {
+		errors.general = "Someting went wrong try again later."
+		return res.status(400).json(errors)
+	}
+}
+
+exports.settleSell = async (req, res) => {
+	const errors = {}
+	try {
+		if (!res.locals.admin) {
+			errors.general = "Not Authorized"
+			return res.status(403).json(errors)
+		}
+
+		const transformedId = mongoose.Types.ObjectId(req.body.saleId)
+
+		const sale = await Sell.findOneAndUpdate(
+			{ _id: transformedId },
+			{
+				status: "settled"
+			},
+			{ new: true }
+		)
+
+		await sale.save()
+
+		return res
+			.status(201)
+			.json({ message: "Sale has been settled successfully" })
 	} catch (error) {
 		errors.general = "Someting went wrong try again later."
 		return res.status(400).json(errors)

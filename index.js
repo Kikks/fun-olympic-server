@@ -24,13 +24,18 @@ const {
 	fetchPendingUsers,
 	fetchUser,
 	fetchPendingUser,
-	uploadRate
+	uploadRate,
+	fetchPurchases,
+	fetchSales,
+	fetchPurchase,
+	fetchSale,
+	settleBuy,
+	settleSell
 } = require("./handlers/admin")
 const { checkAdmin, checkUser } = require("./utils/authorization")
 
 const PORT = process.env.PORT || 5000
 
-app.use(cors())
 app.use(
 	fileUpload({
 		useTempFiles: true,
@@ -49,14 +54,21 @@ app.get("/user/fetch-rates", fetchRates)
 
 //Admin routes
 app.post("/admin/verify", jsonParser, checkAdmin, verifyUser)
+app.post("/admin/settle-buy", jsonParser, checkAdmin, settleBuy)
+app.post("/admin/settle-sell", jsonParser, checkAdmin, settleSell)
 app.post("/admin/register", jsonParser, registerAdmin)
 app.post("/admin/login", jsonParser, adminLogin)
 app.post("/admin/upload-rate", jsonParser, checkAdmin, uploadRate)
-app.get("/admin/fetch-sers", checkAdmin, fetchUsers)
-app.get("/admin/fetchPendingUsers", checkAdmin, fetchPendingUsers)
+app.get("/admin/fetch-users", checkAdmin, fetchUsers)
+app.get("/admin/fetch-pending-users", checkAdmin, fetchPendingUsers)
 app.get("/admin/fetch-user", jsonParser, checkAdmin, fetchUser)
 app.get("/admin/fetch-pending-user", jsonParser, checkAdmin, fetchPendingUser)
+app.get("/admin/fetch-purchases", checkAdmin, fetchPurchases)
+app.get("/admin/fetch-sales", checkAdmin, fetchSales)
+app.get("/admin/fetch-purchase", jsonParser, checkAdmin, fetchPurchase)
+app.get("/admin/fetch-sale", jsonParser, checkAdmin, fetchSale)
 
+app.use(cors())
 mongoose
 	.connect(process.env.MERN, {
 		useNewUrlParser: true,
