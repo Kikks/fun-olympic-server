@@ -155,7 +155,7 @@ exports.fetchUsers = async (req, res) => {
 
 		return res.status(201).json(users)
 	} catch (error) {
-		errors.general = "Someting went wrong try again later."
+		errors.general = "Something went wrong try again later."
 		return res.status(400).json(errors)
 	}
 }
@@ -172,7 +172,7 @@ exports.fetchPendingUsers = async (req, res) => {
 
 		return res.status(201).json(pendingUsers)
 	} catch (error) {
-		errors.general = "Someting went wrong try again later."
+		errors.general = "Something went wrong try again later."
 		return res.status(400).json(errors)
 	}
 }
@@ -194,7 +194,33 @@ exports.fetchUser = async (req, res) => {
 
 		return res.status(201).json(user)
 	} catch (error) {
-		errors.general = "Someting went wrong try again later."
+		errors.general = "Something went wrong try again later."
+		return res.status(400).json(errors)
+	}
+}
+
+exports.deleteUser = async (req, res) => {
+	const errors = {}
+	try {
+		if (!res.locals.admin) {
+			errors.general = "Not Authorized"
+			return res.status(403).json(errors)
+		}
+
+		const transformedId = mongoose.Types.ObjectId(req.body.userId)
+		const user = await User.findById(transformedId)
+		if (!user) {
+			errors.general = "No user with this id found."
+			return res.status(400).json(errors)
+		}
+
+		await user.delete()
+
+		return res
+			.status(201)
+			.json({ message: "User has been deleted Successfully" })
+	} catch (error) {
+		errors.general = "Something went wrong try again later."
 		return res.status(400).json(errors)
 	}
 }
@@ -216,7 +242,31 @@ exports.fetchPendingUser = async (req, res) => {
 
 		return res.status(201).json(pendingUser)
 	} catch (error) {
-		errors.general = "Someting went wrong try again later."
+		errors.general = "Something went wrong try again later."
+		return res.status(400).json(errors)
+	}
+}
+
+exports.deletePendingUser = async (req, res) => {
+	const errors = {}
+	try {
+		if (!res.locals.admin) {
+			errors.general = "Not Authorized"
+			return res.status(403).json(errors)
+		}
+
+		const transformedId = mongoose.Types.ObjectId(req.body.pendingUserId)
+		const pendingUser = await PendingUser.findById(transformedId)
+		if (!pendingUser) {
+			errors.general = "No pending user with this id found."
+			return res.status(400).json(errors)
+		}
+
+		await pendingUser.delete()
+
+		return res.status(201).json("Pending user has been deleted successfully")
+	} catch (error) {
+		errors.general = "Something went wrong try again later."
 		return res.status(400).json(errors)
 	}
 }
@@ -233,7 +283,7 @@ exports.fetchPurchases = async (req, res) => {
 
 		return res.status(201).json(purchases)
 	} catch (error) {
-		errors.general = "Someting went wrong try again later."
+		errors.general = "Something went wrong try again later."
 		return res.status(400).json(errors)
 	}
 }
@@ -250,7 +300,7 @@ exports.fetchSales = async (req, res) => {
 
 		return res.status(201).json(sales)
 	} catch (error) {
-		errors.general = "Someting went wrong try again later."
+		errors.general = "Something went wrong try again later."
 		return res.status(400).json(errors)
 	}
 }
@@ -274,7 +324,7 @@ exports.fetchPurchase = async (req, res) => {
 
 		return res.status(201).json(purchase)
 	} catch (error) {
-		errors.general = "Someting went wrong try again later."
+		errors.general = "Something went wrong try again later."
 		return res.status(400).json(errors)
 	}
 }
@@ -300,7 +350,7 @@ exports.fetchSale = async (req, res) => {
 
 		return res.status(201).json(sale)
 	} catch (error) {
-		errors.general = "Someting went wrong try again later."
+		errors.general = "Something went wrong try again later."
 		return res.status(400).json(errors)
 	}
 }
@@ -330,7 +380,7 @@ exports.settleBuy = async (req, res) => {
 			.status(201)
 			.json({ message: "Purchase has been settled successfully" })
 	} catch (error) {
-		errors.general = "Someting went wrong try again later."
+		errors.general = "Something went wrong try again later."
 		return res.status(400).json(errors)
 	}
 }
@@ -360,7 +410,7 @@ exports.settleSell = async (req, res) => {
 			.status(201)
 			.json({ message: "Sale has been settled successfully" })
 	} catch (error) {
-		errors.general = "Someting went wrong try again later."
+		errors.general = "Something went wrong try again later."
 		return res.status(400).json(errors)
 	}
 }
@@ -403,7 +453,7 @@ exports.uploadRate = async (req, res) => {
 
 		return res.status(201).json(newRate)
 	} catch (error) {
-		errors.general = "Someting went wrong try again later."
+		errors.general = "Something went wrong try again later."
 		return res.status(400).json(errors)
 	}
 }
