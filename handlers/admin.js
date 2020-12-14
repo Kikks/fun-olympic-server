@@ -257,14 +257,16 @@ exports.fetchSales = async (req, res) => {
 
 exports.fetchPurchase = async (req, res) => {
 	const errors = {}
+	const id = req.body.purchaseId
 	try {
 		if (!res.locals.admin) {
 			errors.general = "Not Authorized"
 			return res.status(403).json(errors)
 		}
 
-		const transformedId = mongoose.Types.ObjectId(req.body.purchaseId)
+		const transformedId = mongoose.Types.ObjectId(id)
 		const purchase = await Purchase.findById(transformedId)
+
 		if (!purchase) {
 			errors.general = "No purchase with this id found."
 			return res.status(400).json(errors)
@@ -279,14 +281,18 @@ exports.fetchPurchase = async (req, res) => {
 
 exports.fetchSale = async (req, res) => {
 	const errors = {}
+
+	const id = req.body.saleId
+
 	try {
 		if (!res.locals.admin) {
 			errors.general = "Not Authorized"
 			return res.status(403).json(errors)
 		}
 
-		const transformedId = mongoose.Types.ObjectId(req.body.saleId)
+		const transformedId = mongoose.Types.ObjectId(id)
 		const sale = await Sell.findById(transformedId)
+
 		if (!sale) {
 			errors.general = "No sale with this id found."
 			return res.status(400).json(errors)
@@ -301,13 +307,14 @@ exports.fetchSale = async (req, res) => {
 
 exports.settleBuy = async (req, res) => {
 	const errors = {}
+	const id = req.body.purchaseId
 	try {
 		if (!res.locals.admin) {
 			errors.general = "Not Authorized"
 			return res.status(403).json(errors)
 		}
 
-		const transformedId = mongoose.Types.ObjectId(req.body.purchaseId)
+		const transformedId = mongoose.Types.ObjectId(id)
 
 		const purchase = await Purchase.findOneAndUpdate(
 			{ _id: transformedId },
@@ -329,6 +336,7 @@ exports.settleBuy = async (req, res) => {
 }
 
 exports.settleSell = async (req, res) => {
+	const id = req.body.saleId
 	const errors = {}
 	try {
 		if (!res.locals.admin) {
@@ -336,7 +344,7 @@ exports.settleSell = async (req, res) => {
 			return res.status(403).json(errors)
 		}
 
-		const transformedId = mongoose.Types.ObjectId(req.body.saleId)
+		const transformedId = mongoose.Types.ObjectId(id)
 
 		const sale = await Sell.findOneAndUpdate(
 			{ _id: transformedId },

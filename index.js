@@ -43,7 +43,6 @@ app.use(
 	})
 )
 
-
 app.use(cors())
 
 //User routes
@@ -64,7 +63,7 @@ app.post("/admin/login", jsonParser, adminLogin)
 app.post("/admin/upload-rate", jsonParser, checkAdmin, uploadRate)
 app.get("/admin/fetch-users", checkAdmin, fetchUsers)
 app.get("/admin/fetch-pending-users", checkAdmin, fetchPendingUsers)
-app.get("/admin/fetch-user", jsonParser, checkAdmin, fetchUser)
+app.post("/admin/fetch-user", jsonParser, checkAdmin, fetchUser)
 app.post("/admin/fetch-pending-user", jsonParser, checkAdmin, fetchPendingUser)
 app.get("/admin/fetch-purchases", checkAdmin, fetchPurchases)
 app.get("/admin/fetch-sales", checkAdmin, fetchSales)
