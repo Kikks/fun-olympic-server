@@ -7,6 +7,7 @@ const sellSchema = new Schema({
 	firstName: String,
 	middleName: String,
 	lastName: String,
+	email: String,
 	bank: {
 		name: String,
 		acctNo: String,

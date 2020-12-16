@@ -162,7 +162,8 @@ exports.uploadImage = (req, res) => {
 
 	if (targetFile.size > 2048576) {
 		fs.unlinkSync(targetFile.tempFilePath)
-		errors.identification = "File is too large. Max size of upload should be 2mb"
+		errors.identification =
+			"File is too large. Max size of upload should be 2mb"
 		return res.status(413).json(errors)
 	}
 
@@ -231,7 +232,7 @@ exports.buy = async (req, res) => {
 		if (!valid) return res.status(403).json(errors)
 
 		const user = await User.findOne({ email: res.locals.user.email })
-		const { firstName, middleName, lastName, bank } = user
+		const { firstName, middleName, lastName, email, bank } = user
 		const newBuy = new Purchase({
 			amount,
 			platform,
@@ -239,39 +240,7 @@ exports.buy = async (req, res) => {
 			firstName,
 			middleName,
 			lastName,
-			bank,
-			status: "not settled"
-		})
-
-		await newBuy.save()
-		return res.status(201).json({ message: "Request sent successfuly" })
-	} catch (error) {
-		return res.status(400).json({ error, message: "Something went wrong" })
-	}
-}
-
-exports.buy = async (req, res) => {
-	try {
-		if (!res.locals.user) {
-			errors.general = "Not Authorized"
-			return res.status(403).json(errors)
-		}
-
-		const { amount, platform, walletId } = req.body
-
-		const { errors, valid } = validateBuy(amount, platform, walletId)
-
-		if (!valid) return res.status(403).json(errors)
-
-		const user = await User.findOne({ email: res.locals.user.email })
-		const { firstName, middleName, lastName, bank } = user
-		const newBuy = new Purchase({
-			amount,
-			platform,
-			walletId,
-			firstName,
-			middleName,
-			lastName,
+			email,
 			bank,
 			status: "not settled"
 		})
@@ -297,13 +266,14 @@ exports.sell = async (req, res) => {
 		if (!valid) return res.status(403).json(errors)
 
 		const user = await User.findOne({ email: res.locals.user.email })
-		const { firstName, middleName, lastName, bank } = user
+		const { firstName, middleName, lastName, bank, email } = user
 		const newSell = new Sell({
 			amount,
 			platform,
 			firstName,
 			middleName,
 			lastName,
+			email,
 			bank,
 			status: "not settled"
 		})
@@ -321,6 +291,25 @@ exports.fetchRates = async (req, res) => {
 		const rates = await Rate.findById(process.env.RATE_ID)
 		return res.status(201).json(rates)
 	} catch (error) {
+		errors.general = "Something went wrong. Try again later"
+		return res.status(400).json(errors)
+	}
+}
+
+exports.fetchActivityLog = async (req, res) => {
+	const errors = {}
+	try {
+		if (!res.locals.user) {
+			errors.general = "Not Authorized"
+			return res.status(403).json(errors)
+		}
+
+		const { email } = res.locals.user
+		const purchases = await Purchase.find({ email })
+		const sales = await Sell.find({ email })
+
+		return res.status(201).json({ purchases, sales })
+	} catch (err) {
 		errors.general = "Something went wrong. Try again later"
 		return res.status(400).json(errors)
 	}
