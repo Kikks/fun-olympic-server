@@ -58,7 +58,7 @@ app.post("/user/buy", jsonParser, checkUser, buy)
 app.post("/user/sell", jsonParser, checkUser, sell)
 app.get("/user/fetch-rates", fetchRates)
 app.get("/user/fetch-activity-log", checkUser, fetchActivityLog)
-app.get("/user/get-ticker-data", jsonParser, fetchTickerData)
+app.post("/user/get-ticker-data", jsonParser, fetchTickerData)
 
 //Admin routes
 //////verify
