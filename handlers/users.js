@@ -309,7 +309,7 @@ exports.fetchTickerData = async (req, res) => {
 					})
 
 					resp.on("end", () => {
-						return res.status(200).json(data)
+						return res.status(200).json(JSON.parse(data))
 					})
 				}
 			)
