@@ -296,6 +296,31 @@ exports.fetchRates = async (req, res) => {
 	}
 }
 
+exports.fetchTickerData = async (req, res) => {
+	const { currency } = req.body
+	try {
+		https
+			.get(
+				`https://api.nomics.com/v1/currencies/ticker?key=9650bc232337f90431b764d8b5c3a923&ids=BTC,ETH,LTC,XRP,BCH&interval=1d&convert=${currency}&per-page=20&page=1`,
+				resp => {
+					let data = ""
+					resp.on("data", chunk => {
+						data += chunk
+					})
+
+					resp.on("end", () => {
+						return res.status(200).json(data)
+					})
+				}
+			)
+			.on("error", err => {
+				console.log("Error: " + err.message)
+			})
+	} catch (error) {
+		console.log(error)
+	}
+}
+
 exports.fetchActivityLog = async (req, res) => {
 	const errors = {}
 	try {
