@@ -160,7 +160,7 @@ exports.uploadImage = (req, res) => {
 		return res.status(422).json(errors)
 	}
 
-	if (targetFile.size > 2048576) {
+	if (targetFile.size > 10048576) {
 		fs.unlinkSync(targetFile.tempFilePath)
 		errors.identification =
 			"File is too large. Max size of upload should be 2mb"
