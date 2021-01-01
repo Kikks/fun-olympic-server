@@ -35,7 +35,7 @@ module.exports.validateRegisterInput = (
 	const errors = {}
 
 	if (isEmpty(firstName)) errors.firstName = "First Name must not be empty"
-	if (isEmpty(middleName)) errors.middleName= "Middle Name must not be empty"
+	if (isEmpty(middleName)) errors.middleName = "Middle Name must not be empty"
 	if (isEmpty(lastName)) errors.lastName = "Last Name must not be empty"
 	if (isEmpty(dob)) errors.dob = "Date of Birth must not be empty"
 	if (isEmpty(sex)) errors.sex = "Sex must not be empty"
@@ -60,6 +60,30 @@ module.exports.validateRegisterInput = (
 	if (isEmpty(bank.acctNo)) errors.acctNo = "Account Number must not be empty"
 	else if (bank.acctNo.length !== 10) errors.acctNo = "Invalid Account Number"
 	else if (!parseFloat(bank.acctNo)) errors.acctNo = "Invalid Account Number"
+
+	return {
+		errors,
+		valid: Object.keys(errors) < 1
+	}
+}
+
+module.exports.validateUpdateProfile = (
+	street,
+	city,
+	phoneNumber,
+	country,
+	state
+) => {
+	const errors = {}
+
+	if (isEmpty(street)) errors.street = "Street must not be empty"
+	if (isEmpty(city)) errors.city = "City must not be empty"
+	if (isEmpty(phoneNumber))
+		errors.phoneNumber = "Phone Number must not be empty"
+	else if (!isPhoneNumber(phoneNumber))
+		errors.phoneNumber = "Please use +XXX XXXXXXXX fromat"
+	if (isEmpty(country)) errors.country = "Country must not be empty"
+	if (isEmpty(state)) errors.state = "State must not be empty"
 
 	return {
 		errors,
@@ -117,12 +141,21 @@ module.exports.validateBuy = (amount, platform, walletId) => {
 	}
 }
 
-module.exports.validateSell = (amount, platform) => {
+module.exports.validateSell = (
+	amount,
+	platform,
+	bankName,
+	acctNo,
+	acctName
+) => {
 	const errors = {}
 
 	if (isEmpty(amount.toString())) errors.amount = "Amount must not be empty"
 	else if (!parseFloat(amount)) errors.amount = "Amount must be a number"
 	if (isEmpty(platform)) errors.platform = "Platform must not be empty"
+	if (isEmpty(bankName)) errors.bankName = "Bank Name must not be empty"
+	if (isEmpty(acctName)) errors.acctName = "Account Name must not be empty"
+	if (isEmpty(acctNo)) errors.acctNo = "Account Number must not be empty"
 
 	return {
 		errors,

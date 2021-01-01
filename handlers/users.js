@@ -12,7 +12,8 @@ const {
 	validateRegisterInput,
 	validateLoginInput,
 	validateBuy,
-	validateSell
+	validateSell,
+	validateUpdateProfile
 } = require("../utils/validators")
 const Rate = require("../models/Rate")
 
@@ -42,6 +43,7 @@ exports.register = async (req, res) => {
 		bank,
 		identification
 	} = req.body
+
 	const { errors, valid } = validateRegisterInput(
 		firstName,
 		lastName,
@@ -143,6 +145,68 @@ exports.login = async (req, res) => {
 	)
 
 	return res.status(201).json({ token, id: user._id })
+}
+
+exports.fetchProfile = async (req, res) => {
+	const errors = {}
+	try {
+		if (!res.locals.user) {
+			errors.general = "Not Authorized"
+			return res.status(403).json(errors)
+		}
+
+		const { id } = res.locals.user
+		const user = await User.findById(id)
+		if (!user) {
+			errors.general = "No user with this id found."
+			return res.status(400).json(errors)
+		}
+
+		return res.status(201).json(user)
+	} catch (error) {
+		errors.general = "Something went wrong try again later."
+		return res.status(400).json(errors)
+	}
+}
+
+exports.updateProfile = async (req, res) => {
+	const { street, city, phoneNumber, altPhoneNumber, country, state } = req.body
+
+	const { errors, valid } = validateUpdateProfile(
+		street,
+		city,
+		phoneNumber,
+		country,
+		state
+	)
+
+	try {
+		if (!res.locals.user) {
+			errors.general = "Not Authorized"
+			return res.status(403).json(errors)
+		}
+
+		if (!valid) return res.status(403).json(errors)
+
+		const updatedUser = await User.findOneAndUpdate(
+			{ _id: res.locals.user.id },
+			{
+				street,
+				city,
+				phoneNumber,
+				altPhoneNumber,
+				country,
+				state
+			},
+			{ new: true }
+		)
+		await updatedUser.save()
+
+		return res.status(201).json({ message: "Update Successful" })
+	} catch (error) {
+		errors.general = "Something went wrong try again later."
+		return res.status(400).json(errors)
+	}
 }
 
 exports.uploadImage = (req, res) => {
@@ -259,14 +323,20 @@ exports.sell = async (req, res) => {
 			return res.status(403).json(errors)
 		}
 
-		const { amount, platform } = req.body
+		const { amount, platform, bankName, acctNo, acctName } = req.body
 
-		const { errors, valid } = validateSell(amount, platform)
+		const { errors, valid } = validateSell(
+			amount,
+			platform,
+			bankName,
+			acctNo,
+			acctName
+		)
 
 		if (!valid) return res.status(403).json(errors)
 
 		const user = await User.findOne({ email: res.locals.user.email })
-		const { firstName, middleName, lastName, bank, email } = user
+		const { firstName, middleName, lastName, email } = user
 		const newSell = new Sell({
 			amount,
 			platform,
@@ -274,7 +344,11 @@ exports.sell = async (req, res) => {
 			middleName,
 			lastName,
 			email,
-			bank,
+			bank: {
+				name: bankName,
+				acctName,
+				acctNo
+			},
 			status: "not settled"
 		})
 
@@ -334,6 +408,27 @@ exports.fetchActivityLog = async (req, res) => {
 		const sales = await Sell.find({ email })
 
 		return res.status(201).json({ purchases, sales })
+	} catch (err) {
+		errors.general = "Something went wrong. Try again later"
+		return res.status(400).json(errors)
+	}
+}
+
+exports.fetchSummary = async (req, res) => {
+	const errors = {}
+	try {
+		if (!res.locals.user) {
+			errors.general = "Not Authorized"
+			return res.status(403).json(errors)
+		}
+
+		const { email } = res.locals.user
+		const purchases = await Purchase.find({ email })
+		const sales = await Sell.find({ email })
+
+		return res
+			.status(201)
+			.json({ purchases: purchases.length, sales: sales.length })
 	} catch (err) {
 		errors.general = "Something went wrong. Try again later"
 		return res.status(400).json(errors)
