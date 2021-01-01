@@ -69,7 +69,7 @@ exports.register = async (req, res) => {
 
 	const cryptPassword = await bcrypt.hash(password, 12)
 
-	const pendingUser = new PendingUser({
+	const pendingUser = new User({
 		firstName,
 		lastName,
 		middleName,
