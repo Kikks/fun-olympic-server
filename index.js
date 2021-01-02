@@ -19,7 +19,9 @@ const {
 	fetchSummary,
 	fetchTickerData,
 	fetchProfile,
-	updateProfile
+	updateProfile,
+	guestBuy,
+	guestSell
 } = require("./handlers/users")
 const {
 	registerAdmin,
@@ -59,6 +61,8 @@ app.post("/user/upload-image", uploadImage)
 app.post("/user/verify-payment", jsonParser, checkUser, verifyPayment)
 app.post("/user/buy", jsonParser, checkUser, buy)
 app.post("/user/sell", jsonParser, checkUser, sell)
+app.post("/user/guest-buy", jsonParser, guestBuy)
+app.post("/user/guest-sell", jsonParser, guestSell)
 app.get("/user/fetch-profile", checkUser, fetchProfile)
 app.post("/user/update-profile", jsonParser, checkUser, updateProfile)
 app.get("/user/fetch-rates", fetchRates)

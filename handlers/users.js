@@ -13,6 +13,8 @@ const {
 	validateLoginInput,
 	validateBuy,
 	validateSell,
+	validateGuestBuy,
+	validateGuestSell,
 	validateUpdateProfile
 } = require("../utils/validators")
 const Rate = require("../models/Rate")
@@ -316,6 +318,53 @@ exports.buy = async (req, res) => {
 	}
 }
 
+exports.guestBuy = async (req, res) => {
+	try {
+		const {
+			amount,
+			platform,
+			walletId,
+			firstName,
+			middleName,
+			lastName,
+			email
+		} = req.body
+
+		const { errors, valid } = validateGuestBuy(
+			firstName,
+			middleName,
+			lastName,
+			email,
+			amount,
+			platform,
+			walletId
+		)
+
+		if (!valid) return res.status(403).json(errors)
+
+		const newBuy = new Purchase({
+			amount,
+			platform,
+			walletId,
+			firstName,
+			middleName,
+			lastName,
+			email,
+			bank: {
+				name: "Nil",
+				acctNo: "Nil",
+				acctName: "Nil"
+			},
+			status: "not settled"
+		})
+
+		await newBuy.save()
+		return res.status(201).json({ message: "Request sent successfuly" })
+	} catch (error) {
+		return res.status(400).json({ error, message: "Something went wrong" })
+	}
+}
+
 exports.sell = async (req, res) => {
 	try {
 		if (!res.locals.user) {
@@ -337,6 +386,56 @@ exports.sell = async (req, res) => {
 
 		const user = await User.findOne({ email: res.locals.user.email })
 		const { firstName, middleName, lastName, email } = user
+		const newSell = new Sell({
+			amount,
+			platform,
+			firstName,
+			middleName,
+			lastName,
+			email,
+			bank: {
+				name: bankName,
+				acctName,
+				acctNo
+			},
+			status: "not settled"
+		})
+
+		await newSell.save()
+		return res.status(201).json({ message: "Request sent successfuly" })
+	} catch (error) {
+		return res.status(400).json({ error, message: "Something went wrong" })
+	}
+}
+
+exports.guestSell = async (req, res) => {
+	try {
+		const {
+			firstName,
+			middleName,
+			lastName,
+			email,
+			amount,
+			platform,
+			bankName,
+			acctNo,
+			acctName
+		} = req.body
+
+		const { errors, valid } = validateGuestSell(
+			firstName,
+			middleName,
+			lastName,
+			email,
+			amount,
+			platform,
+			bankName,
+			acctNo,
+			acctName
+		)
+
+		if (!valid) return res.status(403).json(errors)
+
 		const newSell = new Sell({
 			amount,
 			platform,

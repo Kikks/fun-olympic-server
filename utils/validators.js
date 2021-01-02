@@ -141,6 +141,64 @@ module.exports.validateBuy = (amount, platform, walletId) => {
 	}
 }
 
+module.exports.validateGuestBuy = (
+	firstName,
+	middleName,
+	lastName,
+	email,
+	amount,
+	platform,
+	walletId
+) => {
+	const errors = {}
+
+	if (isEmpty(firstName)) errors.firstName = "First Name must not be empty"
+	if (isEmpty(middleName)) errors.middleName = "Middle Name must not be empty"
+	if (isEmpty(lastName)) errors.lastName = "Last Name must not be empty"
+	if (isEmpty(email)) errors.email = "Email must not be empty"
+	else if (!isEmail(email)) errors.email = "Invalid Email"
+	if (isEmpty(amount.toString())) errors.amount = "Amount must not be empty"
+	else if (!parseFloat(amount)) errors.amount = "Amount must be a number"
+	if (isEmpty(platform)) errors.platform = "Platform must not be empty"
+	if (isEmpty(walletId)) errors.walletId = "Wallt Id must not be empty"
+
+	return {
+		errors,
+		valid: Object.keys(errors) < 1
+	}
+}
+
+module.exports.validateGuestSell = (
+	firstName,
+	middleName,
+	lastName,
+	email,
+	amount,
+	platform,
+	bankName,
+	acctNo,
+	acctName
+) => {
+	const errors = {}
+
+	if (isEmpty(firstName)) errors.firstName = "First Name must not be empty"
+	if (isEmpty(middleName)) errors.middleName = "Middle Name must not be empty"
+	if (isEmpty(lastName)) errors.lastName = "Last Name must not be empty"
+	if (isEmpty(email)) errors.email = "Email must not be empty"
+	else if (!isEmail(email)) errors.email = "Invalid Email"
+	if (isEmpty(amount.toString())) errors.amount = "Amount must not be empty"
+	else if (!parseFloat(amount)) errors.amount = "Amount must be a number"
+	if (isEmpty(platform)) errors.platform = "Platform must not be empty"
+	if (isEmpty(bankName)) errors.bankName = "Bank Name must not be empty"
+	if (isEmpty(acctName)) errors.acctName = "Account Name must not be empty"
+	if (isEmpty(acctNo)) errors.acctNo = "Account Number must not be empty"
+
+	return {
+		errors,
+		valid: Object.keys(errors) < 1
+	}
+}
+
 module.exports.validateSell = (
 	amount,
 	platform,
