@@ -3,6 +3,7 @@ const jwt = require("jsonwebtoken")
 const bcrypt = require("bcryptjs")
 const cloudinary = require("cloudinary").v2
 const https = require("https")
+const nodemailer = require("nodemailer")
 
 const User = require("../models/User")
 const PendingUser = require("../models/PendingUser")
@@ -73,7 +74,7 @@ exports.register = async (req, res) => {
 
 	const cryptPassword = await bcrypt.hash(password, 12)
 
-	const pendingUser = new User({
+	const pendingUser = new PendingUser({
 		firstName,
 		lastName,
 		middleName,
@@ -92,21 +93,142 @@ exports.register = async (req, res) => {
 		createdAt: new Date().toISOString()
 	})
 
-	const response = await pendingUser.save()
-	const token = jwt.sign(
-		{
-			id: response._id,
-			firstName: response.firstName,
-			lastName: response.lastName,
-			middleName: response.middleName,
-			email: response.email,
-			bank: response.bank
-		},
-		process.env.SECRET_KEY,
-		{ expiresIn: "5h" }
-	)
+	await pendingUser.save()
 
-	return res.status(201).json({ token, id: response._id })
+	const transporter = nodemailer.createTransport({
+		service: "gmail",
+		auth: {
+			user: "fairdollar.ng@gmail.com",
+			pass: "Fairdollar1000."
+		}
+	})
+
+	const mailOptions = {
+		from: "fairdollar.ng@gmail.com",
+		to: email,
+		subject: "E-mail Verification",
+		text: "Us this link to verify your email address.",
+		html: `
+				<!DOCTYPE html>
+				<html lang="en">
+				<head>
+					<meta charset="UTF-8"/>
+					<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+					<title>E-mail Verification</title>
+					<style amp4email-boilerplate>
+						*,
+						*::after,
+						*::before {
+							box-sizing: border-box;
+							margin: 0;
+							padding: 0;
+						}
+
+						body {
+							background-color: #f7f7f7;
+							width: 100vw;
+							height: 100vh;
+							font-family: "Open-Sans", sans-serif;
+							display: flex;
+							justify-content: center;
+							align-items: center;
+							align-content: center;
+						}
+
+						.container {
+							font-size: 18px;
+						}
+
+						.link {
+							color: #fff !important;
+							text-decoration: none;
+							text-transform: uppercase;
+							font-size: 15px;
+							line-height: 1;
+						}
+
+						.link-container {
+							display: inline-block;
+							padding: 10px 20px;
+							background-color: #ff880e;
+							border-radius: 3px;
+						}
+					</style>
+					<script async src="https://cdn.ampproject.org/v0.js"></script>
+					<script async custom-element="amp-anim" src="https://cdn.ampproject.org/v0/amp-anim-0.1.js"></script>
+				</head>
+				<body>
+					<div class="container">
+						<h2>E-mail Verification</h2>
+						<br />
+						<p style="font-size: 18px"><strong>User Verification for Fair Dollar account.</strong></p>
+						<br />
+						<p style="font-size: 18px !important;">Hey there ${pendingUser.firstName} ${pendingUser.lastName}! Use this link to verify your account:</p>
+						<br />
+						<div class="link-container">
+							<a href="https://fairdollar.ng/user-verification/${pendingUser._id}" class="link">Click Me</a>
+						</div>
+					</div>
+      			</body>
+				</html>`
+	}
+
+	let emailError
+	transporter.sendMail(mailOptions, async function (error) {
+		if (error) {
+			emailError = true
+			console.log(error)
+		}
+	})
+
+	if (emailError) {
+		errors.general = "Something went wrong, try again at a later time."
+		return res.status(400).json(errors)
+	}
+
+	return res.status(201).json({ message: "User has been verified successfuly."})
+}
+
+exports.verifyUser = async (req, res) => {
+	const errors = {}
+	try {
+		const { pendingUserId } = req.body
+
+		const pendingUser = await PendingUser.findById(pendingUserId)
+
+		if (!pendingUser) {
+			errors.general = "No user with this id is pending"
+			return res.status(400).json(errors)
+		}
+
+		const newUser = new User({
+			firstName: pendingUser.firstName,
+			lastName: pendingUser.lastName,
+			middleName: pendingUser.middleName,
+			dob: pendingUser.dob,
+			sex: pendingUser.sex,
+			street: pendingUser.street,
+			city: pendingUser.city,
+			email: pendingUser.email,
+			password: pendingUser.password,
+			phoneNumber: pendingUser.phoneNumber,
+			country: pendingUser.country,
+			state: pendingUser.state,
+			bank: pendingUser.bank,
+			identification: pendingUser.identification,
+			createdAt: new Date().toISOString()
+		})
+
+		await newUser.save()
+		await pendingUser.delete()
+
+		return res
+			.status(201)
+			.json({ message: `User ${newUser._id} has been created successfuly` })
+	} catch (error) {
+		errors = error
+		return res.status(400).json(errors)
+	}
 }
 
 exports.login = async (req, res) => {

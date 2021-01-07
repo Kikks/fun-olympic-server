@@ -12,6 +12,7 @@ const {
 	login,
 	uploadImage,
 	verifyPayment,
+	verifyUser,
 	buy,
 	sell,
 	fetchRates,
@@ -26,7 +27,6 @@ const {
 const {
 	registerAdmin,
 	adminLogin,
-	verifyUser,
 	fetchUsers,
 	fetchPendingUsers,
 	fetchUser,
@@ -69,10 +69,11 @@ app.get("/user/fetch-rates", fetchRates)
 app.get("/user/fetch-activity-log", checkUser, fetchActivityLog)
 app.get("/user/fetch-summary", checkUser, fetchSummary)
 app.post("/user/get-ticker-data", jsonParser, fetchTickerData)
+app.post("/user/verify-user", jsonParser, verifyUser)
 
 //Admin routes
 //////verify
-app.post("/admin/verify", jsonParser, checkAdmin, verifyUser)
+// app.post("/admin/verify", jsonParser, checkAdmin, verifyUser)
 
 /////admin access
 app.post("/admin/register", jsonParser, registerAdmin)
