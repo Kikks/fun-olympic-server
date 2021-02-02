@@ -22,7 +22,9 @@ const {
 	fetchProfile,
 	updateProfile,
 	guestBuy,
-	guestSell
+	guestSell,
+	fairDollarLiveCounter,
+	forexBetaLiveCounter
 } = require("./handlers/users")
 const {
 	registerAdmin,
@@ -70,6 +72,8 @@ app.get("/user/fetch-activity-log", checkUser, fetchActivityLog)
 app.get("/user/fetch-summary", checkUser, fetchSummary)
 app.post("/user/get-ticker-data", jsonParser, fetchTickerData)
 app.post("/user/verify-user", jsonParser, verifyUser)
+app.get("/user/live-counter", fairDollarLiveCounter)
+app.get("/user/forexbeta-live-counter", forexBetaLiveCounter)
 
 //Admin routes
 //////verify

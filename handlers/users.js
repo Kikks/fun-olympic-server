@@ -19,6 +19,7 @@ const {
 	validateUpdateProfile
 } = require("../utils/validators")
 const Rate = require("../models/Rate")
+const Counters = require("../models/Counters")
 
 cloudinary.config({
 	cloud_name: process.env.CLOUDINARY_NAME,
@@ -186,7 +187,9 @@ exports.register = async (req, res) => {
 		return res.status(400).json(errors)
 	}
 
-	return res.status(201).json({ message: "User has been verified successfuly."})
+	return res
+		.status(201)
+		.json({ message: "User has been verified successfuly." })
 }
 
 exports.verifyUser = async (req, res) => {
@@ -653,5 +656,45 @@ exports.fetchSummary = async (req, res) => {
 	} catch (err) {
 		errors.general = "Something went wrong. Try again later"
 		return res.status(400).json(errors)
+	}
+}
+
+exports.fairDollarLiveCounter = async (req, res) => {
+	try {
+		const { fairDollar } = await Counters.findById("601910df93540e3624b7ed7a")
+
+		const counter = await Counters.findOneAndUpdate(
+			{ _id: "601910df93540e3624b7ed7a" },
+			{
+				fairDollar: fairDollar + 1
+			},
+			{ new: true }
+		)
+
+		await counter.save()
+
+		return res.status(200).json({ counter: counter.fairDollar })
+	} catch (err) {
+		return res.status(400).json(err)
+	}
+}
+
+exports.forexBetaLiveCounter = async (req, res) => {
+	try {
+		const { forexBeta } = await Counters.findById("601910df93540e3624b7ed7a")
+
+		const counter = await Counters.findOneAndUpdate(
+			{ _id: "601910df93540e3624b7ed7a" },
+			{
+				forexBeta: forexBeta + 1
+			},
+			{ new: true }
+		)
+
+		await counter.save()
+
+		return res.status(200).json({ counter: counter.forexBeta })
+	} catch (err) {
+		return res.status(400).json(err)
 	}
 }
