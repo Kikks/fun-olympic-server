@@ -599,7 +599,7 @@ exports.fetchTickerData = async (req, res) => {
 	try {
 		https
 			.get(
-				`https://api.nomics.com/v1/currencies/ticker?key=9650bc232337f90431b764d8b5c3a923&ids=BTC,ETH,LTC,XRP,BCH&interval=1d&convert=${currency}&per-page=20&page=1`,
+				`https://api.nomics.com/v1/currencies/ticker?key=9650bc232337f90431b764d8b5c3a923&ids=ETH,LTC,XRP,BCH&interval=1d&convert=${currency}&per-page=20&page=1`,
 				resp => {
 					let data = ""
 					resp.on("data", chunk => {
