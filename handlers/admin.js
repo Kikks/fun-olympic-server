@@ -95,7 +95,7 @@ exports.adminLogin = async (req, res) => {
 
 exports.getStats = async (req, res) => {
 	try {
-		const { date } = req.body;
+		const { date } = req.params;
 		const { errors, valid } = validateDate(date);
 		if (!valid) return res.status(403).json(errors);
 

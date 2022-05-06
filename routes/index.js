@@ -54,5 +54,5 @@ exports.routes = app => {
 	//Admin
 	app.post("/admin/login", jsonParser, adminLogin);
 	app.post("/admin/register", jsonParser, adminRegister);
-	app.get("/admin/login-stats", jsonParser, checkAdmin, getStats);
+	app.get("/admin/login-stats/:date", jsonParser, checkAdmin, getStats);
 };
