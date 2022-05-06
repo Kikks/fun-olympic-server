@@ -50,9 +50,7 @@ exports.adminRegister = async (req, res) => {
 			.json({ message: "Admin has been created successfuly." });
 	} catch (error) {
 		console.error(error);
-		return res
-			.status(500)
-			.json({ error: error, message: "Something went wrong." });
+		return res.status(500).json({ message: "Something went wrong." });
 	}
 };
 
@@ -91,9 +89,7 @@ exports.adminLogin = async (req, res) => {
 		return res.status(201).json({ token });
 	} catch (error) {
 		console.error(error);
-		return res
-			.status(500)
-			.json({ error: error, message: "Something went wrong." });
+		return res.status(500).json({ message: "Something went wrong." });
 	}
 };
 
@@ -117,8 +113,6 @@ exports.getStats = async (req, res) => {
 		}
 	} catch (error) {
 		console.error(error);
-		return res
-			.status(500)
-			.json({ error: error, message: "Something went wrong." });
+		return res.status(500).json({ message: "Something went wrong." });
 	}
 };

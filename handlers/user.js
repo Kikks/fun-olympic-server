@@ -22,9 +22,7 @@ exports.getUsers = async (req, res) => {
 		return res.status(200).json({ users });
 	} catch (error) {
 		console.error(error);
-		return res
-			.status(500)
-			.json({ error: error, message: "Something went wrong." });
+		return res.status(500).json({ message: "Something went wrong." });
 	}
 };
 
@@ -70,9 +68,7 @@ exports.register = async (req, res) => {
 			.json({ message: "User has been created successfuly." });
 	} catch (error) {
 		console.error(error);
-		return res
-			.status(500)
-			.json({ error: error, message: "Something went wrong." });
+		return res.status(500).json({ message: "Something went wrong." });
 	}
 };
 
@@ -124,9 +120,7 @@ exports.login = async (req, res) => {
 		return res.status(201).json({ token, id: user._id });
 	} catch (error) {
 		console.error(error);
-		return res
-			.status(500)
-			.json({ error: error, message: "Something went wrong." });
+		return res.status(500).json({ message: "Something went wrong." });
 	}
 };
 
@@ -149,9 +143,7 @@ exports.logout = async (req, res) => {
 			.json({ message: "User logged out successfully", id: user._id });
 	} catch (error) {
 		console.error(error);
-		return res
-			.status(500)
-			.json({ error: error, message: "Something went wrong." });
+		return res.status(500).json({ message: "Something went wrong." });
 	}
 };
 
@@ -204,9 +196,7 @@ exports.addBroadcastToUser = async (req, res) => {
 		return res.status(201).json({ token, id: user._id });
 	} catch (error) {
 		console.error(error);
-		return res
-			.status(500)
-			.json({ error: error, message: "Something went wrong." });
+		return res.status(500).json({ message: "Something went wrong." });
 	}
 };
 
@@ -261,9 +251,7 @@ exports.removeBroadcastFromUser = async (req, res) => {
 		return res.status(201).json({ token, id: user._id });
 	} catch (error) {
 		console.error(error);
-		return res
-			.status(500)
-			.json({ error: error, message: "Something went wrong." });
+		return res.status(500).json({ message: "Something went wrong." });
 	}
 };
 
@@ -282,9 +270,7 @@ exports.deleteUser = async (req, res) => {
 		});
 	} catch (error) {
 		console.error(error);
-		return res
-			.status(500)
-			.json({ error: error, message: "Something went wrong." });
+		return res.status(500).json({ message: "Something went wrong." });
 	}
 };
 
@@ -308,8 +294,6 @@ exports.resetUserPassword = async (req, res) => {
 		});
 	} catch (error) {
 		console.error(error);
-		return res
-			.status(500)
-			.json({ error: error, message: "Something went wrong." });
+		return res.status(500).json({ message: "Something went wrong." });
 	}
 };
