@@ -80,10 +80,16 @@ exports.login = async (req, res) => {
 		if (!valid) return res.status(403).json(errors);
 
 		const user = await User.findOne({ email });
+
+		if (!user) {
+			errors.general = "User does not exist.";
+			return res.status(403).json(errors);
+		}
+
 		const match = await bcrypt.compare(password, user.password);
 
-		if (!match || !user) {
-			errors.general = "User does not exist or Incorrect details.";
+		if (!match) {
+			errors.general = "Incorrect details.";
 			return res.status(403).json(errors);
 		}
 
