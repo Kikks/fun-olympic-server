@@ -292,6 +292,14 @@ Headers
 
 NOTE: Token above is gotten from login response.
 
+Body
+
+```json
+{
+	"name": "A new broadcast"
+}
+```
+
 ### Response
 
 ```json
