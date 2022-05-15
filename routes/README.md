@@ -251,11 +251,35 @@ NOTE: Token above is gotten from login response.
 }
 ```
 
+# Count Users (Admin Route)
+
+### Request
+
+## `GET /user/count`
+
+Headers
+
+```json
+{
+	"Authorization": "Bearer {{token}}"
+}
+```
+
+NOTE: Token above is gotten from login response.
+
+### Response
+
+```json
+{
+	"count": 5
+}
+```
+
 # Get Broadcasts
 
 ### Request
 
-## `GET /broadcast`
+## `GET /broadcast?categoryId=62812ccbf8b7a756e56ee7b9`
 
 ### Response
 
@@ -263,13 +287,25 @@ NOTE: Token above is gotten from login response.
 {
 	"broadcasts": [
 		{
-			"_id": "6274886f05af1a00f9c7f0a6",
-			"name": "new",
+			"category": {
+				"_id": "62812ccbf8b7a756e56ee7b9",
+				"name": "football"
+			},
+			"_id": "62812d37f8b7a756e56ee7bb",
+			"name": "Copa del rey",
+			"airingTime": "2022-05-15T16:31:10.645Z",
+			"link": "https://google.com",
 			"__v": 0
 		},
 		{
-			"_id": "627486b2a58dcafff3c7c6d5",
-			"name": "testing",
+			"category": {
+				"_id": "62812ccbf8b7a756e56ee7b9",
+				"name": "football"
+			},
+			"_id": "62812cfaf8b7a756e56ee7ba",
+			"name": "UEFA Champions League Final",
+			"airingTime": "2022-05-15T16:31:10.645Z",
+			"link": "https://google.com",
 			"__v": 0
 		}
 	]
@@ -296,7 +332,10 @@ Body
 
 ```json
 {
-	"name": "A new broadcast"
+	"name": "Copa del rey",
+	"categoryId": "62812ccbf8b7a756e56ee7b9",
+	"airingTime": "2022-05-15T16:31:10.645Z",
+	"link": "https://google.com"
 }
 ```
 
@@ -329,6 +368,135 @@ NOTE: Token above is gotten from login response.
 ```json
 {
 	"message": "Broadcast deleted successfully."
+}
+```
+
+# Count Broadcasts (Admin Route)
+
+### Request
+
+## `GET /broadcast/count`
+
+Headers
+
+```json
+{
+	"Authorization": "Bearer {{token}}"
+}
+```
+
+NOTE: Token above is gotten from login response.
+
+### Response
+
+```json
+{
+	"count": 5
+}
+```
+
+# Get Categories
+
+### Request
+
+## `GET /category`
+
+### Response
+
+```json
+{
+	"categories": [
+		{
+			"_id": "62812ccbf8b7a756e56ee7b9",
+			"name": "football",
+			"__v": 0
+		},
+		{
+			"_id": "62812a5262dad5568c3db5be",
+			"name": "swimming",
+			"__v": 0
+		}
+	]
+}
+```
+
+# Create Category (Admnin Route)
+
+### Request
+
+## `POST /category`
+
+Headers
+
+```json
+{
+	"Authorization": "Bearer {{token}}"
+}
+```
+
+NOTE: Token above is gotten from login response.
+
+Body
+
+```json
+{
+	"name": "football"
+}
+```
+
+### Response
+
+```json
+{
+	"message": "Category created successfully."
+}
+```
+
+# Delete category (Admnin Route)
+
+### Request
+
+## `POST /category/:categoryId`
+
+Headers
+
+```json
+{
+	"Authorization": "Bearer {{token}}"
+}
+```
+
+NOTE: Token above is gotten from login response.
+
+### Response
+
+```json
+{
+	"message": "Category deleted successfully."
+}
+```
+
+# Count Categories (Admin Route)
+
+### Request
+
+## `GET /category/count`
+
+Headers
+
+```json
+{
+	"Authorization": "Bearer {{token}}"
+}
+```
+
+NOTE: Token above is gotten from login response.
+
+### Response
+
+```json
+{
+	"count": 5
 }
 ```
 

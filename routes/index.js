@@ -5,8 +5,15 @@ const jsonParser = bodyParser.json();
 const {
 	getBroadcasts,
 	addBroadcast,
-	deleteBroadcast
+	deleteBroadcast,
+	countBroadCasts
 } = require("../handlers/broadcast");
+const {
+	getCategories,
+	addCategory,
+	deleteCategory,
+	countCategories
+} = require("../handlers/category");
 const {
 	register,
 	login,
@@ -15,12 +22,19 @@ const {
 	removeBroadcastFromUser,
 	getUsers,
 	resetUserPassword,
-	deleteUser
+	deleteUser,
+	countUsers
 } = require("../handlers/user");
 
 const { checkUser, checkAdmin } = require("../utils/authorization");
 
 exports.routes = app => {
+	// Categories
+	app.get("/category", getCategories);
+	app.post("/category", jsonParser, checkAdmin, addCategory);
+	app.delete("/category/:categoryId", jsonParser, checkAdmin, deleteCategory);
+	app.get("/category/count", jsonParser, checkAdmin, countCategories);
+
 	// Broadcasts
 	app.get("/broadcast", getBroadcasts);
 	app.post("/broadcast", jsonParser, checkAdmin, addBroadcast);
@@ -30,6 +44,7 @@ exports.routes = app => {
 		checkAdmin,
 		deleteBroadcast
 	);
+	app.get("/broadcast/count", jsonParser, checkAdmin, countBroadCasts);
 
 	//User
 	app.get("/user", jsonParser, checkAdmin, getUsers);
@@ -50,6 +65,7 @@ exports.routes = app => {
 	);
 	app.patch("/user/:userId", jsonParser, checkAdmin, resetUserPassword);
 	app.delete("/user/:userId", jsonParser, checkAdmin, deleteUser);
+	app.get("/user/count", jsonParser, checkAdmin, countUsers);
 
 	//Admin
 	app.post("/admin/login", jsonParser, adminLogin);

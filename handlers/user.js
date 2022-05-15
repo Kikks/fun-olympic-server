@@ -303,3 +303,16 @@ exports.resetUserPassword = async (req, res) => {
 		return res.status(500).json({ message: "Something went wrong." });
 	}
 };
+
+exports.countUsers = async (req, res) => {
+	try {
+		const count = await User.countDocuments();
+
+		return res.status(200).json({
+			count
+		});
+	} catch (error) {
+		console.error(error);
+		return res.status(500).json({ message: "Something went wrong." });
+	}
+};

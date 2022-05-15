@@ -94,10 +94,29 @@ module.exports.validateBroadcastId = broadCastId => {
 	};
 };
 
-module.exports.validateBroadcastName = name => {
+module.exports.validateCreateBroadcast = ({
+	name,
+	categoryId,
+	airingTime,
+	link
+}) => {
 	const errors = {};
 
-	if (isEmpty(name)) errors.email = "Broadcast Name must not be empty";
+	if (isEmpty(name)) errors.name = "Broadcast Name must not be empty";
+	if (isEmpty(airingTime)) errors.airingTime = "Airing Time must not be empty";
+	if (isEmpty(categoryId)) errors.categoryId = "Category ID must not be empty";
+	if (isEmpty(link)) errors.link = "Link must not be empty";
+
+	return {
+		errors,
+		valid: Object.keys(errors) < 1
+	};
+};
+
+module.exports.validateCreateCateogory = name => {
+	const errors = {};
+
+	if (isEmpty(name)) errors.name = "Category Name must not be empty";
 
 	return {
 		errors,
