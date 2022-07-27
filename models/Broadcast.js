@@ -6,7 +6,8 @@ const bradcastSchema = new Schema({
 		_id: String,
 		name: String,
 		airingTime: String,
-		link: String
+		link: String,
+		image: String
 	},
 	airingTime: String,
 	link: String

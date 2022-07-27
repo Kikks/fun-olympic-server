@@ -104,7 +104,7 @@ module.exports.validateCreateBroadcast = ({
 
 	if (isEmpty(name)) errors.name = "Broadcast Name must not be empty";
 	if (isEmpty(airingTime)) errors.airingTime = "Airing Time must not be empty";
-	if (isEmpty(categoryId)) errors.categoryId = "Category ID must not be empty";
+	if (isEmpty(categoryId)) errors.categoryId = "Category must not be empty";
 	if (isEmpty(link)) errors.link = "Link must not be empty";
 
 	return {
@@ -113,10 +113,11 @@ module.exports.validateCreateBroadcast = ({
 	};
 };
 
-module.exports.validateCreateCateogory = name => {
+module.exports.validateCreateCateogory = (name, image) => {
 	const errors = {};
 
 	if (isEmpty(name)) errors.name = "Category Name must not be empty";
+	if (isEmpty(image)) errors.image = "Category Image must not be empty";
 
 	return {
 		errors,

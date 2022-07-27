@@ -15,9 +15,9 @@ exports.getCategories = async (req, res) => {
 
 exports.addCategory = async (req, res) => {
 	try {
-		const { name } = req.body;
+		const { name, image } = req.body;
 
-		const { errors, valid } = validateCreateCateogory(name);
+		const { errors, valid } = validateCreateCateogory(name, image);
 		if (!valid) return res.status(403).json(errors);
 
 		const cateogory = await Category.findOne({ name });
@@ -26,7 +26,8 @@ exports.addCategory = async (req, res) => {
 			return res.status(403).json({ general: "Category exists already." });
 
 		const newCategory = new Category({
-			name: name.trim()
+			name: name.trim(),
+			image
 		});
 
 		await newCategory.save();
